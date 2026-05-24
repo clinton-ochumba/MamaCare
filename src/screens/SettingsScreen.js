@@ -119,11 +119,14 @@ export default function SettingsScreen({ navigation }) {
     // Notify backend to schedule deletion
     try {
       const _apiBase = process.env.EXPO_PUBLIC_API_BASE_URL || '';
-      await fetch(`${_apiBase}/account/schedule-deletion`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(record),
-      });
+      const endpoint = _apiBase ? `${_apiBase}/api/account/delete-schedule` : null;
+      if (endpoint) {
+        await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record),
+        });
+      }
     } catch (_) {
       // Offline — will sync on next open
     }

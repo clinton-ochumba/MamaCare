@@ -20,7 +20,6 @@ import {
   SafeAreaView,
   ActivityIndicator,
   ScrollView,
-  Alert,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 
@@ -268,7 +267,7 @@ export default function DocumentViewer({ navigation, route }) {
 
       <View style={styles.footer}>
         {!hasScrolledToBottom && !isLoading && (
-          <Text style={styles.scrollHint}>↓ Scroll to the bottom to confirm you've read this</Text>
+          <Text style={styles.scrollHint}>↓ Scroll to the bottom to confirm you have read this</Text>
         )}
         <TouchableOpacity
           style={[styles.markReadBtn, !hasScrolledToBottom && styles.markReadBtnDisabled]}

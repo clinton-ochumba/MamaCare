@@ -1,6 +1,7 @@
 // Community Health Worker Dashboard
 // CHW can monitor and manage multiple pregnant women in their community
 // Frontend: React web app - chw-dashboard/Dashboard.jsx
+/* global window, localStorage */
 
 import React, { useState, useEffect } from 'react';
 import {

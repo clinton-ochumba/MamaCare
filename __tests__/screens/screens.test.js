@@ -189,3 +189,11 @@ describe('ConsentScreen — consent workflow', () => {
     expect(content).toMatch(/saveConsents|setConsents|saveItem.*consent|consent.*save/i);
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+describe('SettingsScreen — deletion workflow', () => {
+  test('uses the backend delete-schedule endpoint', () => {
+    const content = src('SettingsScreen.js');
+    expect(content).toMatch(/\/api\/account\/delete-schedule/);
+  });
+});
