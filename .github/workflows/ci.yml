@@ -1,0 +1,241 @@
+# .github/workflows/ci.yml
+# MamaCare CI Pipeline — v2
+#
+# All jobs must pass before a PR can be merged.
+# The three safety gates (clinical, security, accessibility) run as independent
+# jobs so a failure in one is immediately visible — they cannot be buried inside
+# a general test run or masked by a coverage failure elsewhere.
+#
+# Job dependency graph:
+#   install ──┬─► test            ─────────────────────────────┐
+#             ├─► lint                                          ├─► gate-summary
+#             ├─► audit                                        │
+#             ├─► safety-clinical ─► (dedicated gate output)  ─┤
+#             ├─► safety-security ─► (dedicated gate output)  ─┤
+#             └─► safety-accessibility ► (dedicated gate)     ─┘
+#
+# "gate-summary" is the single branch-protection target.
+
+name: MamaCare CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ── 1. GENERAL TEST SUITE (with coverage gate) ───────────────────────────────
+  test:
+    name: "Jest — Full Suite + Coverage"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: npm }
+      - run: npm ci
+      - name: Run full test suite with coverage
+        run: npm run test:coverage
+        env: { CI: true }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+
+  # ── 2. LINT (src/ + backend/) ────────────────────────────────────────────────
+  lint:
+    name: "ESLint — src/ + backend/"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: npm }
+      - run: npm ci
+      - run: npm run lint
+
+  # ── 3. DEPENDENCY SECURITY AUDIT ─────────────────────────────────────────────
+  audit:
+    name: "npm audit — HIGH + CRITICAL"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: npm }
+      - run: npm ci
+      - run: npm audit --audit-level=high
+
+  # ── 4. CLINICAL SAFETY INVARIANTS ────────────────────────────────────────────
+  # A failure here means a triage defect that could cause delayed care.
+  # INVARIANTS:
+  #   INVAR-001: No RED symptom ever produces sendAlert: false
+  #   INVAR-002: No GREEN symptom ever produces sendAlert: true
+  #   INVAR-003: convulsions always → EMERGENCY priority
+  #   INVAR-004: no_fetal_movement_24hrs always → RED level
+  #   INVAR-005: assessSymptoms never throws for any string input
+  safety-clinical:
+    name: "SAFETY GATE — Clinical Triage Invariants"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: npm }
+      - run: npm ci
+      - name: Run clinical safety invariant tests
+        run: npm run test:safety
+        env: { CI: true }
+      - name: Print gate summary
+        if: success()
+        run: |
+          echo "╔════════════════════════════════════════╗"
+          echo "║ ✅  Clinical safety invariants PASSED  ║"
+          echo "╚════════════════════════════════════════╝"
+
+  # ── 5. SECURITY AUDIT TESTS ──────────────────────────────────────────────────
+  # Static analysis: PHI logging, hardcoded secrets, ADB backup, storage routing.
+  # Tests: SEC-001 through SEC-008
+  safety-security:
+    name: "SAFETY GATE — Security Audit Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: npm }
+      - run: npm ci
+      - name: Run security audit tests
+        run: npm run test:security
+        env: { CI: true }
+      - name: Print gate summary
+        if: success()
+        run: |
+          echo "╔════════════════════════════════════════╗"
+          echo "║ ✅  Security audit tests PASSED        ║"
+          echo "║    SEC-001 PHI logging                 ║"
+          echo "║    SEC-002 Hardcoded domains           ║"
+          echo "║    SEC-003 HTTP URLs                   ║"
+          echo "║    SEC-004 PHI key routing             ║"
+          echo "║    SEC-005 ADB backup prevention       ║"
+          echo "║    SEC-006 No hardcoded API keys       ║"
+          echo "║    SEC-007 Storage routing             ║"
+          echo "║    SEC-008 Network security config     ║"
+          echo "╚════════════════════════════════════════╝"
+
+  # ── 6. ACCESSIBILITY SAFETY TESTS ────────────────────────────────────────────
+  # Ensures emergency buttons remain reachable by TalkBack/VoiceOver users.
+  # Tests: A11Y-001 through A11Y-015 + A11Y-SAFETY
+  safety-accessibility:
+    name: "SAFETY GATE — Accessibility Audit Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: npm }
+      - run: npm ci
+      - name: Run accessibility audit tests
+        run: npm run test:accessibility
+        env: { CI: true }
+      - name: Print gate summary
+        if: success()
+        run: |
+          echo "╔════════════════════════════════════════╗"
+          echo "║ ✅  Accessibility audit tests PASSED   ║"
+          echo "║    A11Y-SAFETY: Emergency buttons      ║"
+          echo "║    A11Y-007:    Alert button labels    ║"
+          echo "║    A11Y-005:    Live regions present   ║"
+          echo "║    A11Y-013:    PIN lock accessible    ║"
+          echo "╚════════════════════════════════════════╝"
+
+  # ── 7. GATE SUMMARY (single branch-protection target) ────────────────────────
+  # Set branch protection to require THIS job only.
+  # All upstream jobs must pass for this to succeed.
+  gate-summary:
+    name: "All Gates Passed"
+    runs-on: ubuntu-latest
+    needs: [test, lint, audit, safety-clinical, safety-security, safety-accessibility]
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          FAILED=""
+          [ "${{ needs.test.result }}"               != "success" ] && FAILED="$FAILED test"
+          [ "${{ needs.lint.result }}"               != "success" ] && FAILED="$FAILED lint"
+          [ "${{ needs.audit.result }}"              != "success" ] && FAILED="$FAILED audit"
+          [ "${{ needs.safety-clinical.result }}"   != "success" ] && FAILED="$FAILED safety-clinical"
+          [ "${{ needs.safety-security.result }}"   != "success" ] && FAILED="$FAILED safety-security"
+          [ "${{ needs.safety-accessibility.result }}" != "success" ] && FAILED="$FAILED safety-accessibility"
+
+          if [ -n "$FAILED" ]; then
+            echo "❌ CI BLOCKED — failed:$FAILED"
+            exit 1
+          fi
+
+          echo "╔══════════════════════════════════════════════════╗"
+          echo "║  ✅  ALL GATES PASSED — safe to merge            ║"
+          echo "║  Full tests  ✅  Lint  ✅  npm audit  ✅        ║"
+          echo "║  Clinical    ✅  Security  ✅  Accessibility  ✅ ║"
+          echo "╚══════════════════════════════════════════════════╝"
+
+  # ── 8. PILOT READINESS REPORT (manual dispatch only) ─────────────────────────
+  pilot-readiness:
+    name: "Pilot Readiness Report (manual)"
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: npm }
+      - run: npm ci
+      - name: Run full test suite
+        run: npm run test:coverage
+        env: { CI: true }
+      - name: Run all safety gates
+        run: npm run test:gates
+        env: { CI: true }
+      - name: Run lint
+        run: npm run lint
+      - name: Run security audit
+        run: npm audit --audit-level=high
+      - name: Print readiness report
+        run: |
+          echo "════════════════════════════════════════════════════"
+          echo "            MAMACARE PILOT READINESS REPORT         "
+          echo "════════════════════════════════════════════════════"
+          echo " Branch:  ${{ github.ref_name }}"
+          echo " Commit:  ${{ github.sha }}"
+          echo " Date:    $(date -u '+%Y-%m-%d %H:%M UTC')"
+          echo ""
+          echo " AUTOMATED GATES (all passed to reach this step):"
+          echo "   ✅  Full test suite (≥80% coverage)"
+          echo "   ✅  ESLint (src/ + backend/)"
+          echo "   ✅  npm audit (no HIGH/CRITICAL deps)"
+          echo "   ✅  Clinical safety invariants (5/5)"
+          echo "   ✅  Security audit (SEC-001 – SEC-008)"
+          echo "   ✅  Accessibility audit (A11Y-001 – A11Y-SAFETY)"
+          echo ""
+          echo " MANUAL CHECKLIST (complete before launch):"
+          echo "   [ ] ODPC Data Controller registration confirmed"
+          echo "   [ ] Professional indemnity insurance active"
+          echo "   [ ] Medical Advisor OB/GYN sign-off on triage logic"
+          echo "   [ ] EAS production build signed + device tested"
+          echo "   [ ] Africa's Talking SMS tested on all 3 networks"
+          echo "   [ ] 50 participants enrolled, consent documented"
+          echo "   [ ] CHW training completed"
+          echo "   [ ] Incident hotline staffed and distributed"
+          echo ""
+          echo " STATUS: AUTOMATED CHECKS COMPLETE — MANUAL ITEMS PENDING"
+          echo "════════════════════════════════════════════════════"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pilot-readiness-${{ github.sha }}
+          path: coverage/
+          retention-days: 90

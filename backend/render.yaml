@@ -1,0 +1,26 @@
+# Render deployment configuration — https://render.com/docs/infrastructure-as-code
+# Alternative to Railway. Free tier available for pilot.
+
+services:
+  - type: web
+    name: mamacare-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install --omit=dev
+    startCommand: node sms-ussd-gateway.js
+
+    healthCheckPath: /health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: AFRICASTALKING_API_KEY
+        sync: false   # Enter manually in Render dashboard
+      - key: AFRICASTALKING_USERNAME
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: capacitor://localhost
+
+    autoDeploy: false   # Manual deploy only during pilot — no surprise updates

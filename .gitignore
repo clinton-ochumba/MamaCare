@@ -1,0 +1,75 @@
+# MamaCare .gitignore
+# ─────────────────────────────────────────────────────────────────────────────
+# CRITICAL: node_modules, .env, and build artefacts must never be committed.
+# The .env file contains API keys (Google STT, AfricasTalking) and must
+# remain local only. Committing it would expose keys in version history.
+
+# ─── Environment & secrets (NEVER commit) ────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.production
+
+# ─── Node / npm ───────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+
+# ─── Expo / Metro ────────────────────────────────────────────────────────────
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+/android/
+/ios/
+
+# ─── EAS Build ───────────────────────────────────────────────────────────────
+.eas/
+eas-build-post-install.sh
+
+# ─── Jest / Test coverage ────────────────────────────────────────────────────
+coverage/
+.jest-cache/
+jest_runner_*
+
+# ─── OS & editor files ───────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+.Spotlight-V100
+.Trashes
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ─── Build outputs ───────────────────────────────────────────────────────────
+build/
+*.apk
+*.aab
+*.ipa
+
+# ─── TypeScript (if added later) ─────────────────────────────────────────────
+*.tsbuildinfo
+
+# ─── Miscellaneous ───────────────────────────────────────────────────────────
+.cache/
+tmp/
+temp/

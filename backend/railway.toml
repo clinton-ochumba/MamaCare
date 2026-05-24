@@ -1,0 +1,22 @@
+# Railway deployment configuration — https://railway.app
+# Deploy: connect this repo to Railway and point the root to backend/
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "backend/Dockerfile"
+# Build context must include src/utils so riskAssessment.js is accessible
+dockerContextDir = "."    # repo root, not backend/
+
+[deploy]
+startCommand = "node sms-ussd-gateway.js"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[environment]
+# These are set in Railway's "Variables" panel — never commit real values here
+# AFRICASTALKING_API_KEY = ""       # Set in Railway dashboard
+# AFRICASTALKING_USERNAME = ""      # Set in Railway dashboard
+# ALLOWED_ORIGINS = ""              # e.g. capacitor://localhost,https://mamacare.app
+PORT = "3000"                       # Railway injects $PORT but this is the fallback

@@ -1,0 +1,28 @@
+{
+  "name": "mamacare-backend",
+  "version": "1.0.0",
+  "description": "MamaCare SMS/USSD Gateway and API backend",
+  "main": "sms-ussd-gateway.js",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node sms-ussd-gateway.js",
+    "dev": "nodemon sms-ussd-gateway.js",
+    "test": "jest --testPathPattern='smsGateway' --testEnvironment node --no-coverage",
+    "test:sms": "node scripts/test-sms-delivery.js",
+    "test:sms:local": "BACKEND_URL=http://localhost:3000 node scripts/test-sms-delivery.js"
+  },
+  "dependencies": {
+    "africastalking": "*",
+    "body-parser": "^1.20.4",
+    "express": "^4.22.1",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
+    "supertest": "^7.0.0"
+  }
+}
