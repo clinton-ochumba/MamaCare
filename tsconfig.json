@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "target": "es2017",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "strict": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*","index.ts","index.tsx"],
+  "exclude": ["node_modules"]
+}

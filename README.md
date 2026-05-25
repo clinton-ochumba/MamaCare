@@ -61,7 +61,11 @@ The Expo app can also be deployed as a static web preview on Vercel. The mobile 
    ```text
    web-build
    ```
-6. Add the environment variable:
+6. Set the install command if Vercel fails on dependency scripts:
+   ```bash
+   npm install --ignore-scripts
+   ```
+7. Add the environment variable:
    - `EXPO_PUBLIC_API_BASE_URL` = `https://<your-backend-url>`
 
 ### Notes
