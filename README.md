@@ -38,6 +38,37 @@ npx expo start
 | `SESSION_TIMEOUT_MS` | No | Inactivity lock timeout in ms. Default: `1800000` (30 minutes). |
 | `EXPO_PUBLIC_VOICE_ENABLED` | No | Set to `false` to disable voice checker. Default: `true`. |
 
+## Frontend Web Deployment (Vercel)
+
+The Expo app can also be deployed as a static web preview on Vercel. The mobile Android/iOS application should still be built through EAS, while Vercel hosts the browser-friendly Expo web output.
+
+### Deploy to Vercel
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Build the Expo web app:
+   ```bash
+   npm run build
+   ```
+3. Create a Vercel project and connect the GitHub repo.
+4. Set the Vercel build command to:
+   ```bash
+   npm run build
+   ```
+5. Set the output directory to:
+   ```text
+   web-build
+   ```
+6. Add the environment variable:
+   - `EXPO_PUBLIC_API_BASE_URL` = `https://<your-backend-url>`
+
+### Notes
+
+- `EXPO_PUBLIC_API_BASE_URL` must point to the deployed backend so the web preview can call the API.
+- This static web deployment is for preview/demo use; the mobile app should still be published via EAS.
+
 ---
 
 ## Project Structure

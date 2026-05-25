@@ -16,9 +16,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy dependency manifests first (layer caching — only re-runs npm ci if
+# Copy backend dependency manifests first (layer caching — only re-runs npm ci if
 # package.json or package-lock.json changes, not on every code change)
-COPY package.json package-lock.json* ./
+COPY backend/package.json backend/package-lock.json* ./
 
 RUN npm ci --omit=dev
 
@@ -34,20 +34,18 @@ WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
 
 # Copy application source
-COPY sms-ussd-gateway.js ./
-COPY package.json ./
+COPY backend/sms-ussd-gateway.js ./
+COPY backend/package.json ./
 
-# The gateway also requires riskAssessment.js from the app's src/utils
-# Copy only the shared utility (not the full React Native app)
-RUN mkdir -p src/utils
-COPY --from=builder /app/../src/utils/riskAssessment.js src/utils/riskAssessment.js 2>/dev/null || true
+# The gateway also requires the shared riskAssessment helper from the root app
+COPY src/utils/riskAssessment.js src/utils/riskAssessment.js
 
 # Switch to non-root user
 USER mamacare
 
 # Health check — Railway / Render will mark the service healthy after this passes
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-  CMD wget -qO- http://localhost:${PORT:-3000}/health || exit 1
+  CMD node -e "const http=require('http'); const port=process.env.PORT||3000; const req=http.get({host:'127.0.0.1',port, path:'/health'}, res=> { process.exit(res.statusCode===200 ? 0 : 1); }); req.on('error', ()=>process.exit(1));"
 
 EXPOSE ${PORT:-3000}
 
