@@ -9,7 +9,7 @@
       "distribution": "internal",
       "channel": "development",
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://staging.api.mamacare.app",
+        "EXPO_PUBLIC_API_BASE_URL": "https://staging.mamacare-production-18fc.up.railway.app",
         "EXPO_PUBLIC_VOICE_ENABLED": "true",
         "EXPO_PUBLIC_CHW_DASHBOARD_ENABLED": "true"
       },
@@ -26,7 +26,7 @@
       "distribution": "internal",
       "channel": "staging",
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://staging.api.mamacare.app"
+        "EXPO_PUBLIC_API_BASE_URL": "https://staging.mamacare-production-18fc.up.railway.app"
       },
       "ios": {
         "resourceClass": "m1-medium"
@@ -40,7 +40,7 @@
       "distribution": "store",
       "channel": "production",
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://api.mamacare.app"
+        "EXPO_PUBLIC_API_BASE_URL": "https://mamacare-production-18fc.up.railway.app"
       },
       "ios": {
         "resourceClass": "m1-medium"
@@ -62,7 +62,7 @@
         "gradleCommand": ":app:assembleRelease"
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://api.mamacare.app",
+        "EXPO_PUBLIC_API_BASE_URL": "https://mamacare-production-18fc.up.railway.app",
         "EXPO_PUBLIC_VOICE_ENABLED": "true",
         "EXPO_PUBLIC_USSD_ENABLED": "true",
         "EXPO_PUBLIC_CHW_DASHBOARD_ENABLED": "false",
