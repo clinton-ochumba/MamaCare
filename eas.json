@@ -49,11 +49,10 @@
         "buildType": "app-bundle",
         "resourceClass": "medium"
       },
-      "autoIncrement": true,
-      "_comment": "Post-pilot Play Store release. NOT for the 50-user pilot (use the 'pilot' profile instead)."
+      "autoIncrement": true
+
     },
     "pilot": {
-      "_comment": "50-user field pilot \u2014 sideloaded APK, NOT Play Store. Use: eas build --profile pilot --platform android",
       "distribution": "internal",
       "channel": "pilot",
       "android": {
