@@ -11,6 +11,12 @@ export default ({ config }) => ({
   name: 'MamaCare',
   slug: 'mamacare',
   version: '1.0.0',
+  extra: {
+    eas: {
+      projectId: '06abe469-7f63-48ba-a824-83cb02a8da56',
+    },
+  },
+  owner: 'ochumba',
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
@@ -92,12 +98,12 @@ export default ({ config }) => ({
     // It is NOT embedded as a plain string literal in source code.
     // In production EAS builds, these come from EAS Secrets, not .env files.
     googleSttKey: process.env.EXPO_PUBLIC_GOOGLE_STT_KEY || '',
-    apiBaseUrl: process.env.EXPO_PUBLIC_API_BASE_URL || 'https://api.mamacare.app',
+    apiBaseUrl: process.env.EXPO_PUBLIC_API_BASE_URL || 'https://mamacare-production-18fc.up.railway.app',
     voiceEnabled: process.env.EXPO_PUBLIC_VOICE_ENABLED !== 'false',
     ussdEnabled: process.env.EXPO_PUBLIC_USSD_ENABLED !== 'false',
     chwDashboardEnabled: process.env.EXPO_PUBLIC_CHW_DASHBOARD_ENABLED !== 'false',
     eas: {
-      projectId: '',
+      projectId: '06abe469-7f63-48ba-a824-83cb02a8da56',
     },
   },
 
