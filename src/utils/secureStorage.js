@@ -71,20 +71,20 @@ async function setChunked(key, value) {
 
 async function getChunked(key) {
   const countStr = await SecureStore.getItemAsync(`${key}__count`);
-  if (!countStr) return null;
+  if (!countStr) {return null;}
   const count = parseInt(countStr, 10);
   const chunks = await Promise.all(
     Array.from({ length: count }, (_, i) =>
       SecureStore.getItemAsync(`${key}__${i}`)
     )
   );
-  if (chunks.some((c) => c === null)) return null;
+  if (chunks.some((c) => c === null)) {return null;}
   return chunks.join('');
 }
 
 async function deleteChunked(key) {
   const countStr = await SecureStore.getItemAsync(`${key}__count`);
-  if (!countStr) return;
+  if (!countStr) {return;}
   const count = parseInt(countStr, 10);
   await Promise.all([
     SecureStore.deleteItemAsync(`${key}__count`),
@@ -118,7 +118,7 @@ export const secureStorage = {
       if (isSensitive(key)) {
         // Try chunked first, then single
         const chunked = await getChunked(key);
-        if (chunked !== null) return chunked;
+        if (chunked !== null) {return chunked;}
         return await SecureStore.getItemAsync(key);
       } else {
         return await AsyncStorage.getItem(key);
@@ -134,7 +134,7 @@ export const secureStorage = {
       if (isSensitive(key)) {
         await deleteChunked(key);
         // Also try single-key delete in case it was stored that way
-        try { await SecureStore.deleteItemAsync(key); } catch (_) {}
+          try { await SecureStore.deleteItemAsync(key); } catch (_) { /* ignore delete error */ }
       } else {
         await AsyncStorage.removeItem(key);
       }

@@ -284,7 +284,7 @@ function printSummary() {
     console.log('  \u274C  ' + failed + ' TEST(S) FAILED \u2014 do NOT proceed to pilot until resolved');
     results.filter(r => r.status === 'FAIL').forEach(r => {
       console.log('  \u2022 ' + r.id + ': ' + r.desc);
-      if (r.detail) console.log('    ' + r.detail);
+      if (r.detail) {console.log('    ' + r.detail);}
     });
   }
 

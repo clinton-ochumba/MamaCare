@@ -79,7 +79,7 @@ export default function EmergencyContactsScreen({ navigation }) {
 
       // Support both old format (array of strings) and new format (array of objects)
       const normalised = (raw || []).map((c, i) => {
-        if (typeof c === 'string') return { id: String(i), name: `Contact ${i + 1}`, phone: c };
+        if (typeof c === 'string') {return { id: String(i), name: `Contact ${i + 1}`, phone: c };}
         return c;
       });
       setContacts(normalised);

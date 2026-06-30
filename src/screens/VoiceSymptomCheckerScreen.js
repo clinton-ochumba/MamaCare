@@ -175,13 +175,13 @@ export default function VoiceSymptomCheckerScreen({ navigation }) {
   useEffect(() => {
     loadUserLanguage();
     return () => {
-      if (recording) recording.stopAndUnloadAsync();
+      if (recording) {recording.stopAndUnloadAsync();}
     };
   }, []);
 
   const loadUserLanguage = async () => {
     const profile = await storage.getProfile();
-    if (profile?.preferredLanguage) setLanguage(profile.preferredLanguage);
+    if (profile?.preferredLanguage) {setLanguage(profile.preferredLanguage);}
     profileRef.current = profile;
   };
 
@@ -225,7 +225,7 @@ export default function VoiceSymptomCheckerScreen({ navigation }) {
   };
 
   const stopRecording = async () => {
-    if (!recording) return;
+    if (!recording) {return;}
     setIsRecording(false);
     setIsProcessing(true);
 
@@ -386,7 +386,7 @@ export default function VoiceSymptomCheckerScreen({ navigation }) {
 
   // ── Text fallback submit ──────────────────────────────────────────────────
   const handleTextSubmit = () => {
-    if (!manualText.trim()) return;
+    if (!manualText.trim()) {return;}
     setTranscript(manualText.trim());
     processSymptoms(manualText.trim());
   };
@@ -435,7 +435,7 @@ export default function VoiceSymptomCheckerScreen({ navigation }) {
                   <Text style={styles.transcriptLabel}>
                     {language === 'sw-KE' ? 'Ulisema:' : 'You said:'}
                   </Text>
-                  <Text style={styles.transcriptText}>"{transcript}"</Text>
+                  <Text style={styles.transcriptText}>{`"${transcript}"`}</Text>
                 </>
               ) : null}
 
@@ -551,7 +551,7 @@ export default function VoiceSymptomCheckerScreen({ navigation }) {
               {language === 'sw-KE' ? '🎤 Niliposikia:' : '🎤 I heard:'}
             </Text>
             <View style={styles.transcriptBox}>
-              <Text style={styles.transcriptText}>"{pendingTranscript}"</Text>
+              <Text style={styles.transcriptText}>{`"${pendingTranscript}"`}</Text>
             </View>
             <Text style={styles.modalQuestion}>
               {language === 'sw-KE'

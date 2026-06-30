@@ -13,17 +13,17 @@
  * Returns a Date object or null if unparseable.
  */
 export function parseDateString(dateStr) {
-  if (!dateStr || typeof dateStr !== 'string') return null;
+  if (!dateStr || typeof dateStr !== 'string') {return null;}
 
   let day, month, year;
 
   if (dateStr.includes('/')) {
     const parts = dateStr.split('/');
-    if (parts.length !== 3) return null;
+    if (parts.length !== 3) {return null;}
     [day, month, year] = parts.map(Number);
   } else if (dateStr.includes('-')) {
     const parts = dateStr.split('-');
-    if (parts.length !== 3) return null;
+    if (parts.length !== 3) {return null;}
     if (parts[0].length === 4) {
       [year, month, day] = parts.map(Number);
     } else {
@@ -33,13 +33,13 @@ export function parseDateString(dateStr) {
     return null;
   }
 
-  if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
-  if (month < 1 || month > 12) return null;
-  if (day < 1 || day > 31) return null;
+  if (isNaN(day) || isNaN(month) || isNaN(year)) {return null;}
+  if (month < 1 || month > 12) {return null;}
+  if (day < 1 || day > 31) {return null;}
 
   const date = new Date(year, month - 1, day);
   // Validate calendar day (catches Feb 30 etc.)
-  if (date.getMonth() !== month - 1) return null;
+  if (date.getMonth() !== month - 1) {return null;}
 
   return date;
 }
@@ -57,7 +57,7 @@ export function parseDateString(dateStr) {
  */
 export function calculateGestationalAge(lmpDateStr) {
   const lmpDate = parseDateString(lmpDateStr);
-  if (!lmpDate) return null;
+  if (!lmpDate) {return null;}
 
   // Normalise both timestamps to midnight local time so the difference is
   // always an exact integer number of days regardless of the current clock time.
@@ -68,7 +68,7 @@ export function calculateGestationalAge(lmpDateStr) {
   lmpMidnight.setHours(0, 0, 0, 0);
 
   const diffMs = nowMidnight - lmpMidnight;
-  if (diffMs < 0) return null; // LMP in the future — invalid
+  if (diffMs < 0) {return null;} // LMP in the future — invalid
 
   const totalDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
   const weeks = Math.floor(totalDays / 7);
@@ -88,7 +88,7 @@ export function calculateGestationalAge(lmpDateStr) {
  */
 export function calculateDueDate(lmpDateStr) {
   const lmpDate = parseDateString(lmpDateStr);
-  if (!lmpDate) return null;
+  if (!lmpDate) {return null;}
 
   // Use pure millisecond arithmetic to avoid setDate DST edge cases
   // where a daylight-saving transition can shift the result by ±1 day.
@@ -106,7 +106,7 @@ export function calculateDueDate(lmpDateStr) {
  * @returns {number}
  */
 export function getDaysUntilDueDate(dueDate) {
-  if (!dueDate) return null;
+  if (!dueDate) {return null;}
   const now = new Date();
   now.setHours(0, 0, 0, 0);
   const due = new Date(dueDate);
@@ -124,9 +124,9 @@ export function getDaysUntilDueDate(dueDate) {
  * @returns {string}
  */
 export function formatDate(date) {
-  if (!date) return '';
+  if (!date) {return '';}
   const d = date instanceof Date ? date : parseDateString(date);
-  if (!d) return '';
+  if (!d) {return '';}
 
   const months = [
     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -145,7 +145,7 @@ export function formatDate(date) {
  * @returns {1 | 2 | 3}
  */
 export function getTrimester(weeks) {
-  if (weeks < 13) return 1;
-  if (weeks < 27) return 2;
+  if (weeks < 13) {return 1;}
+  if (weeks < 27) {return 2;}
   return 3;
 }

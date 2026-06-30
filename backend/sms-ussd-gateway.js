@@ -40,7 +40,7 @@ try {
       get:   (p, h) => { routes.push({ m:'GET',   p, h }); return app; },
       post:  (p, h) => { routes.push({ m:'POST',  p, h }); return app; },
       patch: (p, h) => { routes.push({ m:'PATCH', p, h }); return app; },
-      listen: (port, cb) => { if (cb) cb(); return app; },
+      listen: (port, cb) => { if (cb) {cb();} return app; },
       set: () => app,
       _routes: routes,
     };
@@ -85,17 +85,17 @@ function isRateLimited(phoneNumber, symptomId) {
   const hits = rateLimitMap.get(key) || 0;
   // Always-send symptoms bypass the daily limit
   const ALWAYS_SEND = ['convulsions', 'severe_bleeding', 'no_fetal_movement_24hrs'];
-  if (ALWAYS_SEND.includes(symptomId)) return false;
-  if (hits >= 1) return true;
+  if (ALWAYS_SEND.includes(symptomId)) {return false;}
+  if (hits >= 1) {return true;}
   rateLimitMap.set(key, hits + 1);
   // Prune map entries older than 2 days to prevent unbounded growth
-  if (rateLimitMap.size > 50_000) rateLimitMap.clear();
+  if (rateLimitMap.size > 50_000) {rateLimitMap.clear();}
   return false;
 }
 
 // ── SMS helper ────────────────────────────────────────────────────────────────
 async function sendSMS(to, message) {
-  if (!AT_SMS) throw new Error('Africa\'s Talking SDK not configured');
+  if (!AT_SMS) {throw new Error('Africa\'s Talking SDK not configured');}
   const toArray = Array.isArray(to) ? to : [to];
   const result  = await AT_SMS.send({ to: toArray, message, from: 'MamaCare' });
   console.info('[SMS] Sent to %d recipients. Status: %s',
@@ -132,7 +132,7 @@ app.use((req, res, next) => {
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  if (req.method === 'OPTIONS') {return res.sendStatus(204);}
   next();
 });
 
@@ -315,7 +315,7 @@ app.post('/ussd', async (req, res) => {
 // ═══════════════════════════════════════════════════════════════════════════════
 app.post('/sms/receive', async (req, res) => {
   const { from, text } = req.body;
-  if (!from || !text) return res.sendStatus(400);
+  if (!from || !text) {return res.sendStatus(400);}
   const cmd = text.trim().toUpperCase();
 
   try {
@@ -402,7 +402,7 @@ app.get('/api/chw/visits/pending', (_req, res) => {
  */
 app.patch('/api/chw/visits/:id/complete', (req, res) => {
   const visit = chwVisitQueue.find(v => v.id === req.params.id);
-  if (!visit) return res.status(404).json({ error: 'Visit not found' });
+  if (!visit) {return res.status(404).json({ error: 'Visit not found' });}
   visit.status = 'completed';
   visit.completedAt = new Date().toISOString();
   visit.chwNotes = req.body.notes || '';
@@ -430,7 +430,7 @@ app.get('/api/chw/mothers', (_req, res) => {
 const deletionSchedule = new Map();
 app.post('/api/account/delete-schedule', (req, res) => {
   const { motherId, scheduledAt } = req.body;
-  if (!motherId) return res.status(400).json({ error: 'motherId required' });
+  if (!motherId) {return res.status(400).json({ error: 'motherId required' });}
   const deleteAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
   deletionSchedule.set(motherId, { scheduledAt: scheduledAt || new Date().toISOString(), deleteAt, status: 'pending' });
   console.info('[Account] Deletion scheduled for %s — executes %s', motherId, deleteAt);

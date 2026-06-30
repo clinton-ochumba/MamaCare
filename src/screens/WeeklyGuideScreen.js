@@ -111,13 +111,13 @@ const WEEKLY_CONTENT = {
  * Returns the nearest available week entry (rounds down, then up).
  */
 function getWeekContent(week) {
-  if (WEEKLY_CONTENT[week]) return { ...WEEKLY_CONTENT[week], week };
+  if (WEEKLY_CONTENT[week]) {return { ...WEEKLY_CONTENT[week], week };}
 
   const keys = Object.keys(WEEKLY_CONTENT).map(Number).sort((a, b) => a - b);
 
   // Find nearest lower key
   const lower = [...keys].reverse().find((k) => k <= week);
-  if (lower) return { ...WEEKLY_CONTENT[lower], week };
+  if (lower) {return { ...WEEKLY_CONTENT[lower], week };}
 
   // Fall back to week 4
   return { ...WEEKLY_CONTENT[4], week: 4 };
@@ -172,7 +172,7 @@ export default function WeeklyGuideScreen({ navigation, route }) {
     );
   }
 
-  if (!content) return null;
+  if (!content) {return null;}
 
   return (
     <SafeAreaView style={styles.container}>

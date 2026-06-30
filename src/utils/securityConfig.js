@@ -22,6 +22,8 @@
  * Path: src/utils/securityConfig.js
  */
 
+/* global __DEV__ */
+
 import { Platform, StatusBar } from 'react-native';
 
 // ─── Production detection ──────────────────────────────────────────────────────

@@ -48,7 +48,7 @@ export default function SettingsScreen({ navigation }) {
     ]);
     setProfile(p);
     setConsents(c);
-    if (del) setDeletionScheduled(JSON.parse(del));
+    if (del) {setDeletionScheduled(JSON.parse(del));}
   };
 
   // ── Export My Data (ODPC Right to Portability) ────────────────────────────

@@ -97,7 +97,7 @@ export default function HomeScreen({ navigation }) {
     );
   }
 
-  if (!profile) return null;
+  if (!profile) {return null;}
 
   const daysUntilDue = dueDate ? getDaysUntilDueDate(dueDate) : null;
 
@@ -215,7 +215,7 @@ export default function HomeScreen({ navigation }) {
           >
             <Text style={styles.actionEmoji} accessible={false}>📖</Text>
             <Text style={styles.actionTitle} accessible={false}>Weekly Guide</Text>
-            <Text style={styles.actionDescription} accessible={false}>Track baby's growth</Text>
+            <Text style={styles.actionDescription} accessible={false}>Track baby&apos;s growth</Text>
           </TouchableOpacity>
 
           <TouchableOpacity

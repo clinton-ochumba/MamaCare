@@ -170,7 +170,7 @@ async function sendViaServer({ participantName, contacts, symptoms, language, mo
 // ── Fallback: expo-sms (native SMS composer — requires user tap) ──────────────
 async function sendViaNativeSMS({ participantName, contacts, symptoms, language }) {
   const isAvailable = await SMS.isAvailableAsync();
-  if (!isAvailable) throw new Error('SMS not available on this device');
+  if (!isAvailable) {throw new Error('SMS not available on this device');}
   const smsBody = buildSMSBody(participantName, symptoms, language);
   await SMS.sendSMSAsync(contacts, smsBody);
   return { sent: true, channel: 'native_sms', requiresUserTap: true };

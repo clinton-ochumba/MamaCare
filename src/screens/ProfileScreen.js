@@ -38,25 +38,25 @@ function validateLmpDate(dateStr) {
   let day, month, year;
   if (dateStr.includes('/')) {
     const parts = dateStr.split('/');
-    if (parts.length !== 3) return { valid: false, message: 'Use format DD/MM/YYYY.' };
+    if (parts.length !== 3) {return { valid: false, message: 'Use format DD/MM/YYYY.' };}
     [day, month, year] = parts.map(Number);
   } else if (dateStr.includes('-')) {
     const parts = dateStr.split('-');
-    if (parts.length !== 3) return { valid: false, message: 'Use format DD/MM/YYYY.' };
+    if (parts.length !== 3) {return { valid: false, message: 'Use format DD/MM/YYYY.' };}
     if (parts[0].length === 4) { [year, month, day] = parts.map(Number); }
     else { [day, month, year] = parts.map(Number); }
   } else {
     return { valid: false, message: 'Please enter date as DD/MM/YYYY.' };
   }
-  if (isNaN(day) || isNaN(month) || isNaN(year)) return { valid: false, message: 'Date contains non-numeric characters.' };
-  if (month < 1 || month > 12) return { valid: false, message: `Month ${month} is not valid.` };
-  if (day < 1 || day > 31) return { valid: false, message: `Day ${day} is not valid.` };
+  if (isNaN(day) || isNaN(month) || isNaN(year)) {return { valid: false, message: 'Date contains non-numeric characters.' };}
+  if (month < 1 || month > 12) {return { valid: false, message: `Month ${month} is not valid.` };}
+  if (day < 1 || day > 31) {return { valid: false, message: `Day ${day} is not valid.` };}
   const lmpDate = new Date(year, month - 1, day);
   const today = new Date(); today.setHours(23, 59, 59, 0);
-  if (lmpDate > today) return { valid: false, message: 'LMP date cannot be in the future.' };
+  if (lmpDate > today) {return { valid: false, message: 'LMP date cannot be in the future.' };}
   const maxPast = new Date(); maxPast.setDate(maxPast.getDate() - 44 * 7);
-  if (lmpDate < maxPast) return { valid: false, message: 'That date is more than 44 weeks ago.' };
-  if (lmpDate.getMonth() !== month - 1) return { valid: false, message: `Day ${day} is not valid for month ${month}.` };
+  if (lmpDate < maxPast) {return { valid: false, message: 'That date is more than 44 weeks ago.' };}
+  if (lmpDate.getMonth() !== month - 1) {return { valid: false, message: `Day ${day} is not valid for month ${month}.` };}
   return { valid: true, date: lmpDate };
 }
 

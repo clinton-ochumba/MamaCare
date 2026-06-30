@@ -51,7 +51,7 @@ export default function SessionManager({ children }) {
     const subscription = AppState.addEventListener('change', handleAppStateChange);
     return () => {
       subscription.remove();
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timerRef.current) {clearTimeout(timerRef.current);}
     };
   }, []);
 
@@ -103,13 +103,13 @@ export default function SessionManager({ children }) {
   };
 
   const lockApp = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
+    if (timerRef.current) {clearTimeout(timerRef.current);}
     setPin('');
     setIsLocked(true);
   };
 
   const resetTimer = useCallback(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
+    if (timerRef.current) {clearTimeout(timerRef.current);}
     timerRef.current = setTimeout(lockApp, TIMEOUT_MS);
     secureStorage.setItem(SESSION_KEY, String(Date.now()));
   }, []);

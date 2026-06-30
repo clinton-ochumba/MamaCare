@@ -83,7 +83,7 @@ export default function CHWDashboard() {
                dueDate.getFullYear() === now.getFullYear();
       }).length,
       recentAlerts: mothersData.filter(m => {
-        if (!m.lastAlert) return false;
+        if (!m.lastAlert) {return false;}
         const alertDate = new Date(m.lastAlert);
         const daysSince = (Date.now() - alertDate.getTime()) / (1000 * 60 * 60 * 24);
         return daysSince <= 7;
@@ -442,7 +442,7 @@ export function calculateCHWPerformance(chw, activities) {
 
 function calculateAverageResponseTime(activities) {
   const emergencies = activities.filter(a => a.type === 'emergency_response');
-  if (emergencies.length === 0) return 0;
+  if (emergencies.length === 0) {return 0;}
 
   const totalTime = emergencies.reduce((sum, e) => {
     return sum + (e.responseTime || 0);

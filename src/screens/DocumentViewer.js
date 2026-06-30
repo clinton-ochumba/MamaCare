@@ -152,7 +152,7 @@ export default function DocumentViewer({ navigation, route }) {
 
   const handleMarkRead = () => {
     // Call back to ConsentScreen to mark this doc as read
-    if (onMarkRead) onMarkRead(docType);
+    if (onMarkRead) {onMarkRead(docType);}
     navigation.goBack();
   };
 
@@ -161,7 +161,7 @@ export default function DocumentViewer({ navigation, route }) {
       const { contentOffset, contentSize, layoutMeasurement } = nativeEvent;
       const isNearBottom =
         contentOffset.y + layoutMeasurement.height >= contentSize.height - 50;
-      if (isNearBottom) setHasScrolledToBottom(true);
+      if (isNearBottom) {setHasScrolledToBottom(true);}
     }
   };
 

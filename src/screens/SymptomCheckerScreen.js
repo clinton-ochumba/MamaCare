@@ -140,7 +140,7 @@ export default function SymptomCheckerScreen({ navigation }) {
   };
 
   const handleSendAlert = async () => {
-    if (!result) return;
+    if (!result) {return;}
 
     if (contacts.length === 0) {
       Alert.alert(
@@ -266,7 +266,7 @@ export default function SymptomCheckerScreen({ navigation }) {
             style={[styles.resultCard, { backgroundColor: RESULT_CONFIG[result.level]?.bg || '#555' }]}
             accessible={true}
             accessibilityLiveRegion={result.level === '🔴' || result.level === '🟠' ? 'assertive' : 'polite'}
-            accessibilityLabel={`Assessment result: ${RESULT_CONFIG[result.level]?.headerText?.replace(/[🚨⚠️👀✅]/g, '')}. ${result.message}`}
+            accessibilityLabel={`Assessment result: ${RESULT_CONFIG[result.level]?.headerText?.replace(/🚨|⚠️|👀|✅/gu, '')}. ${result.message}`}
           >
             <Text style={[styles.resultHeader, { color: RESULT_CONFIG[result.level]?.color || '#fff' }]}>
               {RESULT_CONFIG[result.level]?.headerText}

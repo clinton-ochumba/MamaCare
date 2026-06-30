@@ -239,11 +239,11 @@ export default function OnboardingScreen({ navigation }) {
           </View>
 
           <View style={styles.features}>
-            <Text style={styles.featuresTitle}>What you'll get:</Text>
+            <Text style={styles.featuresTitle}>What you&apos;ll get:</Text>
             {[
               ['🚨', 'AI Symptom Checker', 'Know when to seek help'],
               ['🎤', 'Voice Features', 'Speak your symptoms'],
-              ['📖', 'Weekly Guides', "Track baby's growth"],
+              ['📖', 'Weekly Guides', 'Track baby\'s growth'],
               ['📞', 'Emergency Alerts', 'Automatic family notifications'],
               ['🌐', 'Works Offline', 'No internet needed'],
             ].map(([icon, name, desc]) => (
