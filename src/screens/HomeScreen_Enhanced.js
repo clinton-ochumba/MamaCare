@@ -211,7 +211,7 @@ export default function HomeScreen({ navigation }) {
             onPress={() => navigation.navigate('WeeklyGuide')}
             accessibilityRole="button"
             accessibilityLabel="Weekly Pregnancy Guide"
-            accessibilityHint="Read this week's guide about your baby's development"
+            accessibilityHint="Read this week&apos;s guide about your baby&apos;s development"
           >
             <Text style={styles.actionEmoji} accessible={false}>📖</Text>
             <Text style={styles.actionTitle} accessible={false}>Weekly Guide</Text>
